@@ -1,0 +1,166 @@
+<title>Share Materials</title>
+<style type="text/css">
+	@media only screen and (min-width: 769px){
+		#login-form-con{
+			display: none;
+		}
+	}
+	@media only screen and (min-width: 1200px){
+		.login-links-forget-psw{
+			margin-right: 63%;
+		}
+	}
+
+</style>
+
+	<!--PC header-->
+	<header class="container-fluid header">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12 col-sm-2 col-md-4 col-lg-6">
+					<h1 class="logo text-thin">Logo</h1>
+				</div>
+				<div  class="col-sm-10 col-md-8 col-lg-6 text-right top-login-form">
+					<form id="pc" #f="ngForm" (ngSubmit)="login(f.value)">
+						<span class="input-text-group">
+							<input type="text" class="input-text text-thin" name="matricNum" placeholder="Matric No" required ngModel>
+						</span>
+						<span class="input-text-group">
+							<input type="password" class="input-text text-thin" name="password" placeholder="Password" required ngModel>
+						</span>
+						<button class="btn button text-thin">
+								<span *ngIf="!loading">
+									Login <i class="fa fa-arrow-right" aria-hidden="true"></i>
+								</span>
+								<span *ngIf="loading">
+									<i class="fa fa-spinner fa-spin"></i>
+								</span>
+						</button>
+						<p><a href="" class="login-links-forget-psw text-thin">Forgot Password?</a></p>
+					</form>		
+				</div>
+			</div>
+		</div>
+	</header>
+	<!--/pc-header-->
+
+	<section id="section-container" class="container-fluid">
+		<div class="container">
+			<div class="row">
+				<!--Site description-->
+				<div class="col-xs-12 col-sm-6 col-md-8 text-center site-desc">
+					<h1 class="text-uppercase site-desc-title text-thin smallScreen-desc-title text-large">Sharing Just Got Easy</h1>
+					<p class="site-subtitle">share lecture materials with your course mates anytime and anywhere</p>
+				</div>
+				<!--/Site description-->
+
+				<div class="col-xs-12 col-sm-6 col-md-4">
+					<!--Mobile Login-->
+					<div id="mobile" class="form-container">
+						<h3 class="form-title text-uppercase text-center">Login</h3>
+						<hr>
+						<form class="form">
+							<span class="input-text-group">
+								<input type="text" class="large-input-text input-text text-thin" placeholder="Matric No">
+							</span>
+							<span class="input-text-group">
+								<input type="password" class="large-input-text input-text text-thin" placeholder="Password">
+							</span>
+							<p class="small text-center login-links">
+								<a href="" class="text-thin">Forgot Password?</a>
+							</p>
+							<p class="small text-center text-thin">
+								Don't have an account? <a href="" class="login-links text-thin text-primary">Create Account</a>
+							</p>
+							<br>
+							<button class="btn button text-thin smallScreen-login-button">Login</button>
+						</form>
+					</div>
+					<!--/Mobile Login-->
+
+
+					<!--Sign up-->
+					<div id="pc" class="form-container largeScreen Signup-form-container">
+						<h3 class="form-title text-uppercase text-center">Sign up</h3>
+						<hr>
+						<form class="form" [formGroup]="signUpForm" (ngSubmit)="onSubmit(signUpForm.value)">
+							
+              <!--Matric number-->
+              <span class="input-text-group">
+								<input type="text" [formControl]="matricNum"  class="large-input-text input-text text-thin" [class.invalid-form-border]="matricNum.touched && matricNum.errors" placeholder="Matric No">
+							</span>
+              <span *ngIf="matricNum.touched && matricNum.errors">
+								<p class="error-mesg text-danger text-xs text-2-thin" *ngIf="matricNum.errors.required">Matric number required</p>
+								<p class="error-mesg text-danger text-xs text-2-thin" *ngIf="matricNum.errors.matricNumFormat">Wrong format. Format like this 'BDG/14/8521'</p>
+							</span>
+              <!--/Matric number-->
+              
+              <!--Password-->
+							<span class="input-text-group">
+								<input type="password" [formControl]="password"  class="large-input-text input-text text-thin" [class.invalid-form-border]="password.touched && password.errors" placeholder="Password">
+							</span>
+              <span *ngIf="password.touched && password.errors">
+								<p class="error-mesg text-danger text-xs text-2-thin" *ngIf="password.errors.required">Password required</p>
+							</span>
+              <!--/Password-->
+              
+              <!--Name-->              
+							<span class="input-text-group">
+								<input type="text" [formControl]="name" class="large-input-text input-text text-thin"  [class.invalid-form-border]="name.touched && name.errors" placeholder="Name">
+							</span>
+              <span *ngIf="name.touched && name.errors">
+								<p class="error-mesg text-danger text-xs text-2-thin" *ngIf="name.errors.required">Name required</p>
+							</span>
+              <!--/Name-->
+
+              <!--Email-->
+							<span class="input-text-group">
+								<input type="text" [formControl]="email" class="large-input-text input-text text-thin" [class.invalid-form-border]="email.touched && email.errors" placeholder="Email">
+							</span>
+              <span *ngIf="email.touched && email.errors">
+								<p class="error-mesg text-danger text-xs text-2-thin" *ngIf="email.errors.required">Email required</p>
+								<p class="error-mesg text-danger text-xs text-2-thin" *ngIf="email.errors.emailFormat">Email Wrongly formatted</p>
+							</span>
+              <!--/Email-->
+              
+              <!--Phone Num-->
+							<span class="input-text-group">
+								<input type="text" [formControl]="phoneNum" class="large-input-text input-text text-thin" [class.invalid-form-border]="phoneNum.touched && phoneNum.errors" placeholder="Phone no">
+							</span>
+              <span *ngIf="phoneNum.touched && phoneNum.errors">
+								<p class="error-mesg text-danger text-xs text-2-thin" *ngIf="phoneNum.errors.required">Phone number required</p>
+								<p class="error-mesg text-danger text-xs text-2-thin" *ngIf="phoneNum.errors.phoneNumFormat">Wrong Format. Format like this '08134343433'</p>
+							</span>
+              <!--/Phone Num-->
+              
+              <!--School-->              
+							<span class="input-text-group">
+								<select [formControl]="school" class="large-input-text input-text text-thin text-muted" [class.invalid-form-border]="school.touched && school.errors">
+								  <option value="">Select School</option>
+								  <option value="futa">FUTA</option>
+							  </select>
+							</span>
+              <span *ngIf="school.touched && school.errors">
+								<p class="error-mesg text-danger text-xs text-2-thin" *ngIf="school.errors.required">Select your school</p>
+							</span>
+              <!--/School-->
+              <p class="text-muted text-xs text-2-thin">By signing up shows you've agreed with our Terms and Conditions</p>
+							<button class="btn button button-center text-thin smallScreen-signupBottom-button signup-button" [disabled]="!signUpForm.valid">Signup</button>
+						</form>
+					</div>
+					<!--/signup-->
+
+				</div>
+			</div>
+		</div>
+	</section>
+	<footer class="container-fluid footer">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12 text-center footer-links">
+					<a href="" class="footer-links text-thin">Privacy</a> | <a href="" class="footer-links text-thin">Terms and Conditions</a> | <a href="" class="footer-links text-thin">About us</a> | <a href="" class="footer-links text-thin">Jobs</a> | <a href="" class="footer-links text-thin">Get in touch</a>
+					<p class="copy-right text-thin">2016 All Right Reserved</p>
+				</div>
+			</div>
+		</div>
+	</footer>

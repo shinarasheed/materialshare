@@ -1,0 +1,63 @@
+<material-list></material-list>
+
+<router-outlet></router-outlet>
+
+<!-- Modal -->
+	<div id="myModal" class="modal fade" role="dialog">
+	  <div class="modal-dialog modal-lg">
+
+	    <!-- Modal content-->
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal">&times;</button>
+	        <h4 class="modal-title text-thin text-center">Add New Materials</h4>
+	      </div>
+	      <div class="modal-body">
+            <div class="file-upload-box ">
+                <p class="text-xs upload-instruction">Choose files to upload. You can select more than one file at a time. You can also drag and drop files anywhere on this page to start uploading.</p>
+                <p class="text-xs upload-instruction upload-special-note">Note: Only <span class="text-danger">.pdf</span>, <span class="text-danger">.docs</span>, <span class="text-danger">.txt</span> and <span class="text-danger">.jpg</span>, allowed.</p>
+                    
+                    <div class="upload-progress-box">
+                        <table class="table table-condensed">
+                            <tr *ngFor="let file of selectedFiles; let i = index">
+                                <td class="small"><i class="fa fa-file-pdf-o"></i> {{file.name}}</td>
+                                <td class="small">{{file.size / 1000}}</td>
+                                <td><i class="fa fa-spinner fa-spin"></i></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <form>
+                        <input  type="file" id="inputFile" (change)="uploadMaterial($event)"  multiple class="hidden">
+                        <button type=""  id="selectButton"   class="button small center-block modal-upload-btn">Choose Files</button>
+		      		</form>
+                </div>
+            <form  [formGroup]="addMaterialForm" (ngSubmit)="onSubmitMaterialForm(addMaterialForm.value)">
+                <div class="upload-box">
+                    <div class="input-text-group">
+                        <input type="text" [formControl]="materialTopic" class="input-text small request-input upload-input-lg" placeholder="Topic">
+                    </div>
+                    <div class="input-text-group">
+                        <span>
+                            <input type="text" [formControl]="materialCourseCode" class="input-text small request-input request-input-sm" placeholder="Course code">
+                        </span>
+                        <span class="upload-select-type text-right">
+                            <select class="input-text text-muted request-input request-input-sm" [formControl]="materialType">
+                                <option class="small text-muted" value="none">Type</option>
+                                <option class="small" value="Handout">Handout</option>
+                                <option class="small" value="Note">Note</option>
+                                <option class="small" value="Assignment">Assignment</option>
+                            </select>
+                        </span>
+                    </div>
+                    <div class="input-text-group">
+                        <textarea class="input-text small request-input upload-input-lg upload-description-textarea" placeholder="Material Description" [formControl]="materialDescription"></textarea>
+                    </div>
+                    <button class="button center-block small request-btn" [disabled]="!addMaterialForm.valid">Upload Materials</button>
+                </div>
+            </form>
+        </div>
+	    </div>
+    </div>
+</div>
+
+<!--/modal-->
