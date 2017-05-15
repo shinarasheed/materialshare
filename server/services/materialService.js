@@ -6,7 +6,7 @@ var async = require('async');
 var fs = require('fs');
 var multer = require('multer')
 var path = require('path');
-
+var cache =  require('memory-cache');
 var mongoose = require('mongoose');
 var CM = mongoose.model('ClassMaterial');
 
@@ -29,7 +29,6 @@ var storage = multer.diskStorage({
   },
   //Rename file to fieldname+Date.now() i.e file uploaded date.
    filename: function (req, file, cb) {//rename file 
-    console.log("I was here filename");
     cb(null, file.fieldname+'-'+Date.now()+'-'+path.extname(file.originalname));
   }
 });
@@ -41,7 +40,6 @@ var upload = multer({
   storage: storage,
   //Filter file upload. File allowed [.pdf, .jpg, .docs and .txt];
   fileFilter: function(req, file,cb ){
-      console.log("Filter was here");
       if(path.extname(file.originalname)=='.pdf'){
         return cb(null, true);
       }else{
@@ -49,72 +47,78 @@ var upload = multer({
       }
 
   }
-}).array('materials', 12);//set fieldname and total numbers of file
+}).array('files', 12);//set fieldname and total numbers of file
 
 /** Post Materials 
   * @param request object
   * @param response object
   * @param callback function
   */
-exports.postMaterials = function(/*Object*/req, /*Object*/res, /*Function*/callback){
-    //Get file request and add file to disk
-    upload(req, res, function(err) {
-        if(err) {
-            console.log(err);
-            return callback(err);
-        }
-
+exports.postMaterialDetails = function(/*Object*/req,  /*Function*/callback){
+        
         //Zip file after adding to disk
         //Create a file to stream file archieve data to
-        var archiveFile = uploadDir+'/'+req.body.courseCode+"-"+Date.now()+".zip";
-        var output = fs.createWriteStream(archiveFile);
+        var archiveFileLink = uploadDir+'/'+req.body.materialCourseCode+"-"+Date.now()+".zip";
+        var output = fs.createWriteStream(archiveFileLink);
         var archive = archiver('zip');
         //listen for all archieve data to be written
         output.on('close', function(){
             console.log(archive.pointer() + ' total bytes');
             console.log('archiver has been finallized');
-                var newCM = new CM();
-                newCM.courseTitle = req.body.courseTitle;
-                newCM.courseCode = req.body.courseCode;
-                newCM.level = req.body.level;
-                newCM.topic = req.body.topic;
-                newCM.description = req.body.description;
-                newCM.type = req.body.type;
-                newCM.downloadLink = archiveFile;
-                newCM.uploadedBy = req.body.uploadedBy
-                
+                      
               //Foreach uploaded file
-              async.each(req.files, function(file, cb){
+              async.each(cache.get('files'), function(file, cb){
                  //delete the files after zipping
                 fs.unlink(uploadDir+'\/'+file.filename, function(err){
                       if (err) {console.log(err)}
                  });
               });
-              //Save file details to DB 
-              newCM.save(function(err){
-                  if(err){
-                       console.log(err)
-                       return callback(err)
-                  }
-              });
-              return callback();
+                var newCM = new CM();
+                newCM.courseCode = req.body.materialCourseCode;
+                //newCM.level = req.body.level;
+                newCM.topic = req.body.materialTopic;
+                newCM.description = req.body.materialDescription;
+                newCM.type = req.body.materialType;
+                newCM.downloadLink = archiveFileLink
+                newCM.uploadedBy = "flickz";
+                //Save file details to DB 
+                newCM.save(function(err){
+                    if(err){
+                        console.log(err)
+                        return callback(err, null)
+                    }
+                    return callback(null, {state: "success", mesg: "Successfully"});
+                });
+
         });
         //At any error return callback
         archive.on('error', function(err){
-            return callback(err);
+            return callback(err, null);
         });
         //Pipe archive data to file
 	      archive.pipe(output);
         //Foreach uploaded file
-        async.each(req.files, function(file, cb){
+        async.each(cache.get('files'), function(file, cb){
             //apend a file
             archive.file(uploadDir+'/'+file.filename, {name: file.filename});
         });
        //finalize the archive (ie we are done appending files but streams have to finish yet)
        archive.finalize();
-  
+        
+}
+
+exports.postMaterialFiles = function(req, res, callback){
+    //Get file request and add file to disk
+    upload(req, res, function(err) {
+        if(err) {
+            console.log(err);
+            return callback(err, null);
+        }
+        cache.put('files', req.files);
+        return callback(null, "Successfully");
   });
 }
+
 /** Update Materials details
   *@params request
   *@params callback function

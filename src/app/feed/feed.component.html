@@ -26,8 +26,8 @@
                             </tr>
                         </table>
                     </div>
-                    <form>
-                        <input  type="file" id="inputFile" (change)="uploadMaterial($event)"  multiple class="hidden">
+                    <form enctype="multipart/form-data">
+                        <input  type="file" id="inputFile" name="files" (change)="uploadMaterial($event)"  multiple class="hidden">
                         <button type=""  id="selectButton"   class="button small center-block modal-upload-btn">Choose Files</button>
 		      		</form>
                 </div>

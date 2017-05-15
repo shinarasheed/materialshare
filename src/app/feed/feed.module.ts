@@ -7,7 +7,7 @@ import {FeedRoutingModule} from './feed-routing.module';
 import {HeaderComponent} from '../header/index'
 import {FeedComponent} from './feed.component';
 
-import {NoteService} from '../services/index';
+import {NoteService, MaterialService} from '../services/index';
 
 @NgModule({
     declarations: [FeedComponent,  MaterialListComponent],
@@ -18,6 +18,6 @@ import {NoteService} from '../services/index';
                 FeedRoutingModule              
             ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    providers: [NoteService]
+    providers: [NoteService, MaterialService]
 })
 export class FeedModule{}

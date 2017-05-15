@@ -41,23 +41,45 @@ router.use('/user/mycourse', isAuthenticated);
  * Material API
  * 
  */
- router.route('/upload/materials')
+//  router.route('/upload/materials')
+// 		//Post a material
+// 		.post(function(req, res) {
+// 			MS.postMaterials(req, res, function(err, mesg){
+// 				if(err)
+// 					res.send({message:err});
+// 				res.send({message: mesg});
+// 			})
+// 		})
+// 		//Get the all materials
+// 		.get(function(req, res){
+// 			MS.getMaterials(req,function(err, materials){
+// 				if(err)
+// 					res.send({message: err});
+// 				res.send(materials);
+// 			});
+// 		})
+router.route('/material/file')
 		//Post a material
 		.post(function(req, res) {
-			MS.postMaterials(req, res, function(err, mesg){
-				if(err)
-					res.send({message:err});
-				res.send({message: mesg});
-			})
-		})
-		//Get the all materials
-		.get(function(req, res){
-			MS.getMaterials(req,function(err, materials){
-				if(err)
-					res.send({message: err});
-				res.send(materials);
+			MS.postMaterialFiles(req, res, function(err, mesg){
+				if(err){
+					//console.log(err)
+					res.send("Something went wrong");
+				}
+				res.send(mesg);
 			});
-		})
+		});
+router.route('/material/details')
+		.post(function(req, res){
+					console.log(req.body);
+			
+			MS.postMaterialDetails(req, function(err, mesg){
+				if(err){
+					res.send({state: "failure"}, {mesg: "Something went wrong"});
+				}
+				res.send(mesg);
+			});
+		});
 //Material api call with id
 router.route('/materials/:id')		
 		//Get a material with id

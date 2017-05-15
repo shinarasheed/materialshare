@@ -1,7 +1,7 @@
 import { Component, OnInit, ElementRef, Input } from '@angular/core';
 import {FormBuilder, FormControl, AbstractControl, FormGroup, Validators, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {Response, HttpModule} from '@angular/http';
-
+import {MaterialService} from '../services/index';
 //Custom Validator 
 import {CustomValidate} from '../authenticate/customValidator';
 
@@ -20,7 +20,7 @@ export class FeedComponent implements OnInit {
   materialDescription: AbstractControl;
   selectedFiles;
 
-  constructor(private _fb: FormBuilder, private _el: ElementRef) {
+  constructor(private _fb: FormBuilder,  private _materialService: MaterialService) {
       this.addMaterialForm = this._fb.group({
             //Validation function for each form control
             'materialTopic': ['', Validators.compose([
@@ -46,20 +46,40 @@ export class FeedComponent implements OnInit {
   }
 
   ngOnInit() {
+
   }
   uploadMaterial($event){
        //if any file was selected
        if($event.target.files.length > 0){
            //set the array of selected files
            this.selectedFiles = $event.target.files;
-           console.log(this.selectedFiles);
+           let formData = new FormData;
+            var fileLength = this.selectedFiles.length
+            var i = 0
+             while(fileLength > i){
+                formData.append('files', this.selectedFiles.item(i));                
+                i++;
+            }
+            this.upload(formData);
+           
+             console.log(this.selectedFiles);
        }else{
            console.log("No files selected");
        }
 
+  }     
+  upload(formData: FormData){
+      this._materialService.postMaterialFiles(formData)
+                .subscribe((res)=>{
+                    console.log(res);
+                })
   }
   //Handle new Material form submission  
-  onSubmitMaterialForm(values){
-      console.log(values);
+  onSubmitMaterialForm(data){
+      console.log(data)
+      this._materialService.postMaterialDetails(data)
+                .subscribe((res)=>{
+                    console.log(res);
+                })
   }
 }
